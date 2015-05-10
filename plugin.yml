@@ -1,0 +1,8 @@
+name: BasicPlots
+main: com.boydti.basicplots.Main
+version: 1
+load: STARTUP
+description: A simple plot generator
+authors: [Empire92]
+softdepend: [PlotSquared]
+database: false
