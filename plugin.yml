@@ -1,6 +1,6 @@
 name: BasicPlots
 main: com.boydti.basicplots.Main
-version: 1
+version: 2.3.0
 load: STARTUP
 description: A simple plot generator
 authors: [Empire92]

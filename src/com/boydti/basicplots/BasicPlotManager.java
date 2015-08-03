@@ -2,8 +2,9 @@ package com.boydti.basicplots;
 
 import java.util.ArrayList;
 
-import com.intellectualcrafters.plot.PlotSquared;
+import com.intellectualcrafters.plot.PS;
 import com.intellectualcrafters.plot.generator.GridPlotManager;
+import com.intellectualcrafters.plot.object.ChunkLoc;
 import com.intellectualcrafters.plot.object.Location;
 import com.intellectualcrafters.plot.object.Plot;
 import com.intellectualcrafters.plot.object.PlotBlock;
@@ -11,10 +12,10 @@ import com.intellectualcrafters.plot.object.PlotId;
 import com.intellectualcrafters.plot.object.PlotWorld;
 import com.intellectualcrafters.plot.object.PseudoRandom;
 import com.intellectualcrafters.plot.util.BlockManager;
+import com.intellectualcrafters.plot.util.ChunkManager;
 import com.intellectualcrafters.plot.util.MainUtil;
 import com.intellectualcrafters.plot.util.SetBlockQueue;
 import com.intellectualcrafters.plot.util.TaskManager;
-import com.intellectualcrafters.plot.util.bukkit.BukkitUtil;
 
 public class BasicPlotManager extends GridPlotManager {
 
@@ -24,7 +25,7 @@ public class BasicPlotManager extends GridPlotManager {
 
     @Override
     public boolean clearPlot(final PlotWorld plotworld, final Plot plot, final boolean isDelete, final Runnable whenDone) {
-        BukkitUtil.regenerateChunk(plotworld.worldname, plot.id.x, plot.id.y);
+        ChunkManager.manager.regenerateChunk(plotworld.worldname, new ChunkLoc(plot.id.x, plot.id.y));
         TaskManager.runTask(whenDone);
         return true;
     }
@@ -283,17 +284,6 @@ public class BasicPlotManager extends GridPlotManager {
     }
 
     @Override
-    public boolean unclaimPlot(final PlotWorld plotworld, final Plot plot) {
-        final PlotBlock claim = new PlotBlock(BasicGen.BORDER_CLAIMED_BLOCK, (byte) 0);
-        final PlotBlock unclaim = new PlotBlock(BasicGen.BORDER_BLOCK, (byte) 0);
-        if ((unclaim.id != 0) || !claim.equals(unclaim)) {
-            setWall(plotworld, plot.id, unclaim);
-        }
-        MainUtil.removeSign(plot);
-        return true;
-    }
-
-    @Override
     public String[] getPlotComponents(final PlotWorld plotworld, final PlotId plotid) {
         return new String[] { "floor", "wall", "border" };
     }
@@ -332,11 +322,11 @@ public class BasicPlotManager extends GridPlotManager {
             // This means you are in the intersection
             final Location loc = new Location(pw.worldname, x + 5, 0, z + 5);
             final PlotId id = MainUtil.getPlotAbs(loc);
-            final Plot plot = PlotSquared.getPlots(pw.worldname).get(id);
+            final Plot plot = PS.get().getPlots(pw.worldname).get(id);
             if (plot == null) {
                 return null;
             }
-            if ((plot.settings.getMerged(0) && plot.settings.getMerged(3))) {
+            if ((plot.getMerged(0) && plot.getMerged(3))) {
                 return MainUtil.getBottomPlot(plot).id;
             }
             return null;
@@ -345,11 +335,11 @@ public class BasicPlotManager extends GridPlotManager {
             // You are on a road running West to East (yeah, I named the var poorly)
             final Location loc = new Location(pw.worldname, x, 0, z + 5);
             final PlotId id = MainUtil.getPlotAbs(loc);
-            final Plot plot = PlotSquared.getPlots(pw.worldname).get(id);
+            final Plot plot = PS.get().getPlots(pw.worldname).get(id);
             if (plot == null) {
                 return null;
             }
-            if (plot.settings.getMerged(0)) {
+            if (plot.getMerged(0)) {
                 return MainUtil.getBottomPlot(plot).id;
             }
             return null;
@@ -358,17 +348,17 @@ public class BasicPlotManager extends GridPlotManager {
             // This is the road separating an Eastern and Western plot
             final Location loc = new Location(pw.worldname, x + 5, 0, z);
             final PlotId id = MainUtil.getPlotAbs(loc);
-            final Plot plot = PlotSquared.getPlots(pw.worldname).get(id);
+            final Plot plot = PS.get().getPlots(pw.worldname).get(id);
             if (plot == null) {
                 return null;
             }
-            if (plot.settings.getMerged(3)) {
+            if (plot.getMerged(3)) {
                 return MainUtil.getBottomPlot(plot).id;
             }
             return null;
         }
         final PlotId id = new PlotId(X, Z);
-        final Plot plot = PlotSquared.getPlots(pw.worldname).get(id);
+        final Plot plot = PS.get().getPlots(pw.worldname).get(id);
         if (plot == null) {
             return id;
         }
@@ -396,11 +386,5 @@ public class BasicPlotManager extends GridPlotManager {
     @Override
     public Location getPlotTopLocAbs(final PlotWorld pw, final PlotId id) {
         return new Location(pw.worldname, (id.x << 4) + 13, 0, (id.y << 4) + 13);
-    }
-
-    @Override
-    public boolean setBiome(final Plot plot, final int biome) {
-        // TODO Auto-generated method stub
-        return false;
     }
 }

@@ -7,14 +7,14 @@ import java.util.Random;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 
-import com.intellectualcrafters.plot.object.PlotGenerator;
 import com.intellectualcrafters.plot.object.PlotManager;
-import com.intellectualcrafters.plot.object.PlotPopulator;
 import com.intellectualcrafters.plot.object.PlotWorld;
 import com.intellectualcrafters.plot.object.PseudoRandom;
 import com.intellectualcrafters.plot.object.RegionWrapper;
+import com.plotsquared.bukkit.generator.BukkitPlotGenerator;
+import com.plotsquared.bukkit.generator.BukkitPlotPopulator;
 
-public class BasicGen extends PlotGenerator {
+public class BasicGen extends BukkitPlotGenerator {
 
     private short[][] result;
     private static PlotManager manager = new BasicPlotManager();
@@ -69,9 +69,9 @@ public class BasicGen extends PlotGenerator {
     }
 
     @Override
-    public List<PlotPopulator> getPopulators(final String world) {
+    public List<BukkitPlotPopulator> getPopulators(final String world) {
         // We aren't doing any population, as this is going to be a really basic generator
-        return new ArrayList<PlotPopulator>();
+        return new ArrayList<BukkitPlotPopulator>();
     }
 
     public void setBlock(final short[][] result, final int x, final int y, final int z, final short blkid) {
